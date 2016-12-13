@@ -67,6 +67,8 @@ def evaluate_fitness(individuals):
                     # Mutate the individual to produce a new phenotype
                     # which has not been encountered yet.
                     while (not ind.phenotype) or ind.phenotype in cache:
+                        if params['SEMANTIC_LOCK']:
+                            ind.evaluate()
                         ind = params['MUTATION'](ind)
                         stats['regens'] += 1
 
