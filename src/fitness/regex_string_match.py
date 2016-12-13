@@ -27,7 +27,7 @@ class regex_string_match:
             else:
                 fitness -= 1 / (1 + (abs(ord(t_p) - ord(g_p))))
 
-        if len(guess) <= 2*len(self.target) and params['SEMANTIC_LOCK']:
+        if params['SEMANTIC_LOCK']: # len(guess) <= 2*len(self.target) and
             
             # Set phenotypic output for all nodes in the tree.
             set_phenotypic_output_lr(ind.tree, ind.phenotype, 0)
@@ -96,42 +96,42 @@ class regex_string_match:
 
             index += len_s
 
-        # Read string backwards from the end.
-        index = 0
-
-        for out in reversed(output):
-
-            symbols = out[0]
-            len_s = len(symbols)
-
-            # Get corresponding portion of target string.
-            if not index:
-                target_portion = self.target[- len_s:]
-            else:
-                target_portion = self.target[index - len_s:index]
-
-            # Check for match
-            if target_portion == symbols:
-                # Check for match
-                
-                if len(out[1].children) == 1:
-                    # Parent node leads directly to single terminal. Lock
-                    # both down.
-                    out[1].semantic_lock = True
-                    out[1].children[0].semantic_lock = True
-                        
-                else:
-                    # Parent node has multiple children. Only lock down this
-                    # child.
-                    roots = [kid.root for kid in out[1].children]
-        
-                    # Find which child is the current symbol.
-                    child = roots.index(target_portion)
-        
-                    # Lock that shit down.
-                    out[1].children[child].semantic_lock = True
-
-            index -= len_s
+        # # Read string backwards from the end.
+        # index = 0
+        #
+        # for out in reversed(output):
+        #
+        #     symbols = out[0]
+        #     len_s = len(symbols)
+        #
+        #     # Get corresponding portion of target string.
+        #     if not index:
+        #         target_portion = self.target[- len_s:]
+        #     else:
+        #         target_portion = self.target[index - len_s:index]
+        #
+        #     # Check for match
+        #     if target_portion == symbols:
+        #         # Check for match
+        #
+        #         if len(out[1].children) == 1:
+        #             # Parent node leads directly to single terminal. Lock
+        #             # both down.
+        #             out[1].semantic_lock = True
+        #             out[1].children[0].semantic_lock = True
+        #
+        #         else:
+        #             # Parent node has multiple children. Only lock down this
+        #             # child.
+        #             roots = [kid.root for kid in out[1].children]
+        #
+        #             # Find which child is the current symbol.
+        #             child = roots.index(target_portion)
+        #
+        #             # Lock that shit down.
+        #             out[1].children[child].semantic_lock = True
+        #
+        #     index -= len_s
 
         # Get list of all terminal nodes in the tree.
         output = output_with_nodes(ind.tree, lock=False)
@@ -164,15 +164,6 @@ class regex_string_match:
                     # Set new parent
                     parent = parent.parent
 
-        # print(len(trackers.snippets))
-        #
-        # print("\n- - - - - - - - - - - - - - -\n")
-        #
-        # for snippet in trackers.snippets:
-        #     print(snippet, get_output(trackers.snippets[snippet]))
-        #
-        # quit()
-
     def check_snippets(self, tree):
         """
         Check all nodes in a derivation tree to see if there are any
@@ -192,13 +183,13 @@ class regex_string_match:
                    for n in range(len(self.target)) if
                    self.target.find(output, n) == n and tree.children]
 
-        # Read string from right to left
-        RL_keys = [" ".join([str([-(n + len(output)), -n]), "RL", root])
-                   for n in range(len(self.target)) if
-                   self.target[::-1].find(output[::-1], n) == n and
-                   tree.children]
+        # # Read string from right to left
+        # RL_keys = [" ".join([str([-(n + len(output)), -n]), "RL", root])
+        #            for n in range(len(self.target)) if
+        #            self.target[::-1].find(output[::-1], n) == n and
+        #            tree.children]
         
-        keys = LR_keys + RL_keys
+        keys = LR_keys #+ RL_keys
         
         for key in keys:
             # Add snippet to repository.

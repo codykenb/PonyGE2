@@ -81,9 +81,9 @@ def search_loop_break():
             break
 
         if params['RESTARTS']:
-            if generation > 100:
+            if generation > params['RESTART_INTERVAL']:
                 prev = round(ave([stat['ave_fitness'] for stat in
-                               trackers.stats_list[-100:]]), 5)
+                               trackers.stats_list[-params['RESTART_INTERVAL']:]]), 5)
                 curr = round(trackers.stats_list[-1]['ave_fitness'], 5)
                 
                 if prev == curr:

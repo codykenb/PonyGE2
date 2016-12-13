@@ -34,10 +34,10 @@ class Grammar(object):
         self.rules, self.permutations = {}, {}
         
         # Initialise dicts for terminals and non terminals, set params.
-        self.non_terminals, self.terminals = {}, []
+        self.non_terminals, self.terminals, self.concat_NTs = {}, [], {}
         self.start_rule, self.codon_size = None, params['CODON_SIZE']
         self.min_path, self.max_arity, self.min_ramp = None, None, None
-        
+
         # Set regular expressions for parsing BNF grammar.
         self.ruleregex = '(?P<rulename><\S+>)\s*::=\s*(?P<production>(?:(?=\#)\#[^\r\n]*|(?!<\S+>\s*::=).+?)+)'
         self.productionregex = '(?=\#)(?:\#.*$)|(?!\#)\s*(?P<production>(?:[^\'\"\|\#]+|\'.*?\'|".*?")+)'
@@ -68,6 +68,11 @@ class Grammar(object):
         # Set the minimum depth at which ramping can start where we can have
         # unique solutions (no duplicates).
         self.get_min_ramp_depth()
+
+        if params['SEMANTIC_LOCK']:
+            # Find production choices which can be used to concatenate
+            # subtrees.
+            self.find_concatination_NTs()
             
     def read_bnf_file(self, file_name):
         """
@@ -541,7 +546,46 @@ class Grammar(object):
                 ramp = i
                 break
         self.min_ramp = ramp
-    
+
+    def find_concatination_NTs(self):
+        """
+        Scour the grammar class to find non-terminals which can be used to
+        combine/concatenate derivation trees. Build up a list of such
+        non-terminals. A concatenation non-terminal is one in which at least
+        one production choice contains only non-terminals. For example:
+
+            <e> ::= <e><v>|<v>
+
+        is a concatenation NT, since the production choice <e><v> can
+        concatenate <e> and <v> together. However, the following is NOT a
+        concatenation NT:
+
+            <v> ::= <v>,<e>
+
+        as there is a terminal "," between <v> and <e>, meaning they can not be
+        directly concatenated as there is something between them.
+
+        Currently only set up to work with production choices which
+        concatenate exactly two NTs.
+
+        :return: Nothing.
+        """
+
+        for rule in self.rules:
+            concat_NTs = [choice for choice in self.rules[rule]['choices'] if
+                           choice['NT_kids'] and len(choice['choice']) > 1 and
+                          all([sym['symbol'] in self.non_terminals for sym
+                               in choice['choice']])]
+            if concat_NTs:
+                for choice in concat_NTs:
+                    symbols = [sym['symbol'] for sym in choice['choice']]
+                    if len(symbols) == 2:
+                        for sym in symbols:
+                            if sym not in self.concat_NTs:
+                                self.concat_NTs[sym] = [[choice['choice'], rule]]
+                            else:
+                                self.concat_NTs[sym].append([choice['choice'], rule])
+
     def __str__(self):
         return "%s %s %s %s" % (self.terminals, self.non_terminals,
                                 self.rules, self.start_rule)

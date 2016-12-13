@@ -1,4 +1,4 @@
-<RE>            ::= <elementary-RE><RE>|<elementary-RE><RE>|<elementary-RE>
+<RE>            ::= <elementary-RE><RE>|<elementary-RE>
 
 <elementary-RE> ::= [<RE>]|(<RE>)|<set>|<range>|<modifier>|<char>|\w|\d|{<match_times>}
 

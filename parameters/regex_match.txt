@@ -18,7 +18,7 @@ MAX_TREE_DEPTH:         100
 MAX_TREE_NODES:         None
 MAX_WRAPS:              0
 MULTICORE:              False
-MUTATE_DUPLICATES:      False
+MUTATE_DUPLICATES:      True
 MUTATION:               subtree
 MUTATION_EVENTS:        1
 MUTATION_PROBABILITY:   None
@@ -39,3 +39,4 @@ TAILS:                  False
 HILLCLIMB_SLOPE:        0.15
 SEMANTIC_LOCK:          True
 RESTARTS:               True
+RESTART_INTERVAL:       5

@@ -3,9 +3,9 @@ from operators.crossover import crossover
 from operators.mutation import mutation
 from operators.replacement import replacement
 from operators.selection import selection
-from operators.semantic_swap import semantic_swap
-from fitness.default_fitness import default_fitness
-from algorithm.parameters import params
+from operators.semantic_swap import semantic_swap, combine_snippets
+from utilities.stats import trackers
+from utilities.representation.check_methods import get_output
 
 
 def step(individuals):
@@ -62,13 +62,25 @@ def semantic_step(individuals):
     eval_pop = evaluate_fitness(swap_pop)
     
     # Mutate the new population.
-    new_pop = mutation([i for i in eval_pop if i.fitness != default_fitness(
-        params['FITNESS_FUNCTION'].maximise)])
+    new_pop = mutation(eval_pop)
     
     # Evaluate the fitness of the new population.
     new_pop = evaluate_fitness(new_pop)
     
     # Replace the old population with the new population.
     individuals = replacement(new_pop, individuals)
-    
+
+    # biggest_snippet = [0, None]
+    # print(len(trackers.snippets))
+    # for snippet in sorted(trackers.snippets):
+    #     if len(get_output(trackers.snippets[snippet])) > biggest_snippet[0]:
+    #         biggest_snippet = [len(get_output(trackers.snippets[snippet])), snippet]
+    #
+    # print("\nLargest snippet:", get_output(trackers.snippets[biggest_snippet[
+    #     1]]))#, "\n", str(trackers.snippets[biggest_snippet[1]]))
+
+    # Combine snippets to make bigger snippets. Quickly builds up the
+    # perfect solution.
+    combine_snippets()
+
     return individuals
