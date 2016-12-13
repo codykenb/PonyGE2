@@ -367,7 +367,7 @@ def output_with_nodes(tree, lock=True):
     return output
 
 
-def set_phenotypic_output_lr(tree, phenotype, index):
+def set_phenotypic_output(tree, phenotype, index):
     """
     Set the phenotypic output and the indexes of the output from the overall
     phenotype for each node in the entire derivation tree. Indexes read from
@@ -377,7 +377,7 @@ def set_phenotypic_output_lr(tree, phenotype, index):
     """
 
     tree.output = get_output(tree)
-    tree.pheno_index_lr = [index, index + len(tree.output)]
+    tree.pheno_index = [index, index + len(tree.output)]
     
     for child in tree.children:
         if not child.children:
@@ -388,34 +388,7 @@ def set_phenotypic_output_lr(tree, phenotype, index):
         else:
             # Otherwise it is a non-terminal. Recurse on all
             # non-terminals.
-            index = set_phenotypic_output_lr(child, phenotype, index)
-    
-    return index
-
-
-def set_phenotypic_output_rl(tree, phenotype, index):
-    """
-    Set the phenotypic output and the indexes of the output from the overall
-    phenotype for each node in the entire derivation tree. Indexes read from
-    left to right.
-
-    :return: Nothing.
-    """
-    
-    if not index:
-        tree.pheno_index_rl = [- len(tree.output), None]
-    else:
-        tree.pheno_index_rl = [index - len(tree.output), index]
-
-    for child in reversed(tree.children):
-        if not child.children:
-            # If the current child has no children it is a terminal.
-            # Append it to the output.
-            index -= len(child.root)
-        else:
-            # Otherwise it is a non-terminal. Recurse on all
-            # non-terminals.
-            index = set_phenotypic_output_rl(child, phenotype, index)
+            index = set_phenotypic_output(child, phenotype, index)
     
     return index
 

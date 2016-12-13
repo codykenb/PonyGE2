@@ -1,8 +1,7 @@
 from algorithm.parameters import params
 from utilities.representation.check_methods import output_with_nodes, \
-    set_phenotypic_output_lr, set_phenotypic_output_rl
+    set_phenotypic_output
 from utilities.stats import trackers
-from fitness.default_fitness import default_fitness
 
 
 class regex_string_match:
@@ -27,11 +26,10 @@ class regex_string_match:
             else:
                 fitness -= 1 / (1 + (abs(ord(t_p) - ord(g_p))))
 
-        if params['SEMANTIC_LOCK']: # len(guess) <= 2*len(self.target) and
+        if params['SEMANTIC_LOCK']:
             
             # Set phenotypic output for all nodes in the tree.
-            set_phenotypic_output_lr(ind.tree, ind.phenotype, 0)
-            set_phenotypic_output_rl(ind.tree, ind.phenotype, 0)
+            set_phenotypic_output(ind.tree, ind.phenotype, 0)
 
             # Recurse through the tree to find snippets that match the target.
             # Add to the snippets library if we find any.
@@ -41,9 +39,6 @@ class regex_string_match:
             # idea is to focus remaining search on the areas that don't match
             # the target string.
             self.set_semantic_lock(ind)
-        
-        else:
-            fitness = default_fitness(self.maximise)
 
         return fitness
 
@@ -96,43 +91,6 @@ class regex_string_match:
 
             index += len_s
 
-        # # Read string backwards from the end.
-        # index = 0
-        #
-        # for out in reversed(output):
-        #
-        #     symbols = out[0]
-        #     len_s = len(symbols)
-        #
-        #     # Get corresponding portion of target string.
-        #     if not index:
-        #         target_portion = self.target[- len_s:]
-        #     else:
-        #         target_portion = self.target[index - len_s:index]
-        #
-        #     # Check for match
-        #     if target_portion == symbols:
-        #         # Check for match
-        #
-        #         if len(out[1].children) == 1:
-        #             # Parent node leads directly to single terminal. Lock
-        #             # both down.
-        #             out[1].semantic_lock = True
-        #             out[1].children[0].semantic_lock = True
-        #
-        #         else:
-        #             # Parent node has multiple children. Only lock down this
-        #             # child.
-        #             roots = [kid.root for kid in out[1].children]
-        #
-        #             # Find which child is the current symbol.
-        #             child = roots.index(target_portion)
-        #
-        #             # Lock that shit down.
-        #             out[1].children[child].semantic_lock = True
-        #
-        #     index -= len_s
-
         # Get list of all terminal nodes in the tree.
         output = output_with_nodes(ind.tree, lock=False)
 
@@ -179,17 +137,9 @@ class regex_string_match:
         
         # Find the indexes of matches of the current output on the target.
         # Read string from left to right
-        LR_keys = [" ".join([str([n, n + len(output)]), "LR", root])
-                   for n in range(len(self.target)) if
-                   self.target.find(output, n) == n and tree.children]
-
-        # # Read string from right to left
-        # RL_keys = [" ".join([str([-(n + len(output)), -n]), "RL", root])
-        #            for n in range(len(self.target)) if
-        #            self.target[::-1].find(output[::-1], n) == n and
-        #            tree.children]
-        
-        keys = LR_keys #+ RL_keys
+        keys = [" ".join([str([n, n + len(output)]), root])
+                for n in range(len(self.target)) if
+                self.target.find(output, n) == n and tree.children]
         
         for key in keys:
             # Add snippet to repository.

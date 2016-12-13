@@ -571,16 +571,29 @@ class Grammar(object):
         :return: Nothing.
         """
 
+        # Iterate over all non-terminals/production rules.
         for rule in self.rules:
+            
+            # Find NTs which have production choices which can concatenate
+            # two NTs.
             concat_NTs = [choice for choice in self.rules[rule]['choices'] if
                            choice['NT_kids'] and len(choice['choice']) > 1 and
                           all([sym['symbol'] in self.non_terminals for sym
                                in choice['choice']])]
             if concat_NTs:
+                # We can concatenate two NTs.
                 for choice in concat_NTs:
                     symbols = [sym['symbol'] for sym in choice['choice']]
                     if len(symbols) == 2:
+                        # Currently we can only concatenate two trees,
+                        # so we only look for choices with exactly two NTs.
                         for sym in symbols:
+                            # We add to our self.concat_NTs dictionary. The
+                            # key is the root node we want to concatenate
+                            # with another node. This way when we have a
+                            # node and wish to see if we can concatenate it
+                            # with anything else, we simply look up this
+                            # dictionary.
                             if sym not in self.concat_NTs:
                                 self.concat_NTs[sym] = [[choice['choice'], rule]]
                             else:

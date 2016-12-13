@@ -38,5 +38,5 @@ VERBOSE:                True
 TAILS:                  False
 HILLCLIMB_SLOPE:        0.15
 SEMANTIC_LOCK:          True
-RESTARTS:               True
+RESTARTS:               False
 RESTART_INTERVAL:       5

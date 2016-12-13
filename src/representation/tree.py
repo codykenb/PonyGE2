@@ -23,8 +23,7 @@ class Tree:
         self.root = expr
         self.children = []
         self.semantic_lock = False
-        self.pheno_index_rl = None
-        self.pheno_index_lr = None
+        self.pheno_index = None
 
     def __str__(self):
         """
@@ -67,8 +66,7 @@ class Tree:
         # Set node parameters.
         tree_copy.codon, tree_copy.depth = self.codon, self.depth
         tree_copy.semantic_lock = self.semantic_lock
-        tree_copy.pheno_index_rl = self.pheno_index_rl
-        tree_copy.pheno_index_lr = self.pheno_index_lr
+        tree_copy.pheno_index = self.pheno_index
 
         for child in self.children:
             # Recurse through all children.

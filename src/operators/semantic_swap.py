@@ -76,23 +76,15 @@ def semantic_subtree_swap(ind):
     
     for node in nodes:
         # Generate keys to check for snippets.
-        RL_key = " ".join([str(node[2].pheno_index_rl), 'RL', node[0]])
-        LR_key = " ".join([str(node[2].pheno_index_lr), 'LR', node[0]])
+        key = " ".join([str(node[2].pheno_index), node[0]])
             
-        if RL_key in trackers.snippets and not node[2].semantic_lock:
+        if key in trackers.snippets and not node[2].semantic_lock:
             # We have an existing snippet that we can swap in to improve the
             # current individual.
-            swap_list.append([node, trackers.snippets[RL_key], RL_key])
-
-        elif LR_key in trackers.snippets and not node[2].semantic_lock:
-            # We have an existing snippet that we can swap in to improve the
-            # current individual.
-            swap_list.append([node, trackers.snippets[LR_key], LR_key])
+            swap_list.append([node, trackers.snippets[key], key])
     
     if swap_list:
         # There are improvements to be made
-
-        # print("\nPermissible swaps:", len(swap_list))
 
         # Shorten the available swap list by only listing the largest
         # possible tree swaps. Remove trees which are sub-trees of larger
@@ -117,8 +109,6 @@ def semantic_subtree_swap(ind):
                 # highest possible root nodes).
                 reduced_swap_list[str_section] = [depth, section, item]
 
-        # print("Reduced swaps:", len(reduced_swap_list))
-
         # Get the sets of all indices of all subtrees.
         sets = [set(range(reduced_swap_list[item][1][0], reduced_swap_list[
             item][1][1])) for item in sorted(reduced_swap_list)]
@@ -138,8 +128,6 @@ def semantic_subtree_swap(ind):
                     reduced_swap_list = {key: value for key, value in
                                          reduced_swap_list.items() if key !=
                                          item}
-
-        # print("Final swaps:", len(reduced_swap_list))
 
         # Get the sets of all indices of all subtrees.
         sets = [set(range(reduced_swap_list[item][1][0], reduced_swap_list[
@@ -161,8 +149,6 @@ def semantic_subtree_swap(ind):
                     reduced_swap_list = {key: value for key, value in
                                          reduced_swap_list.items() if key !=
                                          item}
-
-        # print("Non-overlapping swaps:", len(reduced_swap_list))
 
         # Create a list from the reduced dictionary.
         reduced_swap_list = [i[-1] for i in reduced_swap_list.values()]
@@ -235,7 +221,7 @@ def combine_snippets():
                         # Check to see if the newly concatenated item
                         # already exists in the snippets repository:
                         new_key = " ".join([str([section[0], a_section[1]]),
-                                            "LR", i[1]])
+                                            i[1]])
 
                         if new_key in trackers.snippets:
                             # No need to concatenate as a perfectly good
@@ -261,7 +247,7 @@ def combine_snippets():
                         # Check to see if the newly concatenated item
                         # already exists in the snippets repository:
                         new_key = " ".join([str([a_section[0], section[1]]),
-                                            "LR", i[1]])
+                                            i[1]])
 
                         if new_key in trackers.snippets:
                             # No need to concatenate as a perfectly good
