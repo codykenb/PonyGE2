@@ -4,8 +4,6 @@ from operators.mutation import mutation
 from operators.replacement import replacement
 from operators.selection import selection
 from operators.semantic_swap import semantic_swap, combine_snippets, check_snippets_for_solution
-from utilities.stats import trackers
-from utilities.representation.check_methods import get_output
 
 
 def step(individuals):
@@ -52,9 +50,6 @@ def semantic_step(individuals):
     :return: The next generation of the population.
     """
     
-    # # Select parents from the original population.
-    # parents = selection(individuals)
-
     # Mutate the new population.
     new_pop = mutation(individuals)
     

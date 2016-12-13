@@ -343,6 +343,9 @@ def check_snippets_for_solution():
             # We have a new biggest snippet.
             biggest_snippet = [len(get_output(trackers.snippets[snippet])),
                                snippet]
+
+    print("Target:       ", params['TARGET'])
+    print("Biggest chunk:", get_output(trackers.snippets[biggest_snippet[1]]))
         
     if get_output(trackers.snippets[biggest_snippet[1]]) == params['TARGET']:
         # We have a perfect match
