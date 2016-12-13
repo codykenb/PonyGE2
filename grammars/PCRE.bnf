@@ -2,7 +2,7 @@
 
 <elementary-RE> ::= [<RE>]|(<RE>)|<set>|<range>|<modifier>|<char>|\w|\d|{<match_times>}
 
-<modifier>      ::= ^<RE>|<RE>.|<RE>*|<RE>+|<RE>++|<RE>?|<RE>?+|<RE>"|"<RE>
+<modifier>      ::= ^<RE>|<RE>.|<RE>*|<RE>" "|<RE>+|<RE>++|<RE>?|<RE>?+|<RE>"|"<RE>
 
 <set>           ::= <char>|<char><set>
 
