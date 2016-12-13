@@ -3,6 +3,7 @@ from random import randrange
 from algorithm.parameters import params
 from representation import individual, tree
 from utilities.stats import trackers
+from utilities.representation.check_methods import get_output
 
 
 def semantic_swap(parents):
@@ -322,3 +323,39 @@ def generate_codon(NT, choice):
                       len(choices)) + prod_index
 
     return codon
+
+
+def check_snippets_for_solution():
+    """
+    Check the snippets repository to see if we have built up the correct
+    solution yet.
+    
+    :return: An individual representing the correct solution if it exists,
+    otherwise None.
+    """
+
+    # Initialise None biggest snippet
+    biggest_snippet = [0, None]
+
+    for snippet in sorted(trackers.snippets):
+        # Check each snippet to find the largest one.
+        if len(get_output(trackers.snippets[snippet])) > biggest_snippet[0]:
+            # We have a new biggest snippet.
+            biggest_snippet = [len(get_output(trackers.snippets[snippet])),
+                               snippet]
+        
+    if get_output(trackers.snippets[biggest_snippet[1]]) == params['TARGET']:
+        # We have a perfect match
+        
+        # Generate individual that represents the perfect solution.
+        ind = individual.Individual(None, trackers.snippets[biggest_snippet[
+            1]])
+        
+        # Evaluate individual so it will have the perfect fitness.
+        ind.evaluate()
+        
+        # Return ind.
+        return ind
+    
+    else:
+        return None

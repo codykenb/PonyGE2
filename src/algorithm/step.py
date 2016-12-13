@@ -3,7 +3,7 @@ from operators.crossover import crossover
 from operators.mutation import mutation
 from operators.replacement import replacement
 from operators.selection import selection
-from operators.semantic_swap import semantic_swap, combine_snippets
+from operators.semantic_swap import semantic_swap, combine_snippets, check_snippets_for_solution
 from utilities.stats import trackers
 from utilities.representation.check_methods import get_output
 
@@ -73,5 +73,12 @@ def semantic_step(individuals):
     # Combine snippets to make bigger snippets. Quickly builds up the
     # perfect solution.
     combine_snippets()
+
+    # Check snippets for full correct solution
+    solution = check_snippets_for_solution()
+    
+    if solution:
+        # We have found a perfect solution, add it to our population.
+        individuals.append(solution)
 
     return individuals
