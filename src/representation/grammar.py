@@ -1,6 +1,7 @@
 from math import floor
 from re import match, finditer, DOTALL, MULTILINE
 from sys import maxsize
+from copy import copy
 
 from algorithm.parameters import params
 
@@ -73,6 +74,11 @@ class Grammar(object):
             # Find production choices which can be used to concatenate
             # subtrees.
             self.find_concatination_NTs()
+            
+            # Limit the options in the grammar to only the terminals used in
+            # the target string (may cause crashes with poorly designed
+            # grammars).
+            self.limit_grammar()
             
     def read_bnf_file(self, file_name):
         """
@@ -598,6 +604,57 @@ class Grammar(object):
                                 self.concat_NTs[sym] = [[choice['choice'], rule]]
                             else:
                                 self.concat_NTs[sym].append([choice['choice'], rule])
+    
+    def limit_grammar(self):
+        """
+        For use with string match problems. Reduce the number of options for
+        the grammar by removing entries that don't match the target string.
+        WARNING: this may not work if unit productions are used.
+         
+        :return: Nothing.
+        """
+
+        # Iterate over all production rules.
+        for rule in self.rules:
+            # Create a new copy of the production choices.
+            self.rules[rule]['limited_choices'] = \
+                copy(self.rules[rule]['choices'])
+            
+            for choice in self.rules[rule]['limited_choices']:
+                # Find all terminals in current production choice.
+                t_syms = [sym['symbol'] for sym in choice['choice'] if
+                          sym['type'] == "T"]
+
+                if t_syms:
+                    # Remove choice if any terminals don't appear in the target
+                    # string.
+                    if any([i not in params['TARGET'] for i in t_syms]):
+                        self.rules[rule]['limited_choices'].remove(choice)
+            
+            if params['DO_IT']:
+                # Limit recursive choices of all rules
+                for choice in self.non_terminals[rule]['recursive']:
+                    # Find all terminals in current production choice.
+                    t_syms = [sym['symbol'] for sym in choice['choice'] if
+                              sym['type'] == "T"]
+    
+                    if t_syms:
+                        # Remove choice if any terminals don't appear in the target
+                        # string.
+                        if any([i not in params['TARGET'] for i in t_syms]):
+                            self.non_terminals[rule]['recursive'].remove(choice)
+    
+                # Limit min path choices of all rules
+                for choice in self.non_terminals[rule]['min_path']:
+                    # Find all terminals in current production choice.
+                    t_syms = [sym['symbol'] for sym in choice['choice'] if
+                              sym['type'] == "T"]
+    
+                    if t_syms:
+                        # Remove choice if any terminals don't appear in the target
+                        # string.
+                        if any([i not in params['TARGET'] for i in t_syms]):
+                            self.non_terminals[rule]['min_path'].remove(choice)
 
     def __str__(self):
         return "%s %s %s %s" % (self.terminals, self.non_terminals,

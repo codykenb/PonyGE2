@@ -202,77 +202,73 @@ def combine_snippets():
         
         :return: The new length of the snippets dictionary.
         """
-        for snippet in sorted(trackers.snippets.keys()):
-            # Find the portion of the phenotype the current tree represents.
-            str_section = "".join(snippet.split()[:2])
-            section = eval(str_section)
+
+        # Sort snippets keys.
+        sorted_keys = sorted(trackers.snippets.keys())
+        
+        # Iterate over all snippets.
+        for snippet in sorted_keys:
+            # Find current snippet info.
+            splits = snippet.split()
+            start, end, NT = splits[0][1:-1], splits[1][:-1], splits[2]
     
-            # Find the non-terminal at which the current snippet roots itself.
-            NT = snippet.split()[-1]
-    
-            # Find if this NT exists anywhere in the concatenation NTs
+            # Find if the snippet root (NT) exists anywhere in the
+            # concatenation NTs.
             if NT in concats:
-    
-                for a_snippet in sorted(trackers.snippets.keys()):
-                    # Find the portion of the phenotype the current tree
-                    # represents.
-                    a_section = eval("".join(a_snippet.split()[:2]))
-    
-                    # Get the non-terminal of the new snippet.
-                    a_NT = a_snippet.split()[-1]
-    
-                    if a_section[0] == section[1]:
-                        # This snippet directly follows on from our current
-                        # snippet.
-    
-                        # Find a concatenation where the a_NT directly follows
-                        # the current NT.
-                        for i in [concat for concat in concats[NT] if
-                                  concat[0][0]['symbol'] == NT and
-                                  concat[0][1]['symbol'] == a_NT]:
-    
-                            # Check to see if the newly concatenated item
-                            # already exists in the snippets repository:
-                            new_key = " ".join([str([section[0], a_section[1]]),
-                                                i[1]])
-    
+
+                for concat in concats[NT]:
+                    # Now we're searching for a specific subset of keys in the
+                    # snippets dictionary.
+                    a, b = concat[0][0]['symbol'], concat[0][1]['symbol']
+                    
+                    if NT == a:
+                        # We are looking for a following snippet.
+                        match_follows = [v for v in sorted_keys if
+                                         v.split()[0][1:-1] == end and
+                                         v.split()[2] == b]
+                        
+                        for match in match_follows:
+                            # Generate key for proposed concatenation
+                            new_key = " ".join([str([start,
+                                                     match.split()[1][:-1]]),
+                                                concat[1]])
+
                             if new_key in trackers.snippets:
                                 # No need to concatenate as a perfectly good
                                 # solution already exists.
                                 pass
-    
+
                             else:
-                                # We can generate a new snippet by concatenating
-                                # two existing snippets.
-                                create_snippet(i[1], [trackers.snippets[snippet],
-                                                     trackers.snippets[a_snippet]],
-                                               i[0], new_key)
-    
-                    elif a_section[1] == section[0]:
-                        # This snippet directly precedes our current snippet.
-    
-                        # Find a concatenation where the a_NT directly precedes
-                        # the current NT.
-                        for i in [concat for concat in concats[NT] if
-                                  concat[0][1]['symbol'] == NT and
-                                  concat[0][0]['symbol'] == a_NT]:
-    
-                            # Check to see if the newly concatenated item
-                            # already exists in the snippets repository:
-                            new_key = " ".join([str([a_section[0], section[1]]),
-                                                i[1]])
-    
+                                # We can generate a new snippet by
+                                # concatenating two existing snippets.
+                                create_snippet(concat[1],
+                                               [trackers.snippets[snippet],
+                                                trackers.snippets[match]],
+                                               concat[0], new_key)
+                            
+                    elif NT == b:
+                        # We are looking for a leading snippet.
+                        match_leads = [v for v in sorted_keys if
+                                       v.split()[1][:-1] == start and
+                                       v.split()[2] == b]
+                        
+                        for match in match_leads:
+                            # Generate key for proposed concatenation
+                            new_key = " ".join([str([match.split()[0][1:-1],
+                                                     end]), concat[1]])
+
                             if new_key in trackers.snippets:
                                 # No need to concatenate as a perfectly good
                                 # solution already exists.
                                 pass
-    
+
                             else:
-                                # We can generate a new snippet by concatenating
-                                # two existing snippets.
-                                create_snippet(i[1], [trackers.snippets[a_snippet],
-                                                      trackers.snippets[snippet]],
-                                               i[0], new_key)
+                                # We can generate a new snippet by
+                                # concatenating two existing snippets.
+                                create_snippet(concat[1],
+                                               [trackers.snippets[match],
+                                                trackers.snippets[snippet]],
+                                               concat[0], new_key)
 
         return len(trackers.snippets)
 
@@ -302,6 +298,7 @@ def combine_snippets():
 
         print(no_passes, "passes\tOriginal:",
               original_snippets, "\tNew:", updated_snippets)
+
 
 def create_snippet(parent, children, choice, key):
     """

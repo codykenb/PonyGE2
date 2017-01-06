@@ -2,7 +2,7 @@ CACHE:                  True
 CODON_SIZE:             100000
 CROSSOVER:              subtree
 CROSSOVER_PROBABILITY:  0.75
-DEBUG:                  True
+DEBUG:                  False
 EXPERIMENT_NAME:        None
 GENERATIONS:            100000
 GENOME_INIT:            False
@@ -27,16 +27,15 @@ ELITE_SIZE:  		    2
 FITNESS_FUNCTION:       regex_string_match
 RANDOM_SEED:            None
 REPLACEMENT:            steady_state
-SAVE_ALL:               True
+SAVE_ALL:               False
 SAVE_PLOTS:             True
 SEARCH_LOOP:            search_loop_break
-SELECTION:              tournament
 SILENT:                 False
 STEP:                   semantic_step
-TOURNAMENT_SIZE:        3
 VERBOSE:                True
 TAILS:                  False
 HILLCLIMB_SLOPE:        0.15
 SEMANTIC_LOCK:          True
 RESTARTS:               False
 RESTART_INTERVAL:       5
+DO_IT:                  False

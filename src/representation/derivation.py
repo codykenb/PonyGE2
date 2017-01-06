@@ -30,10 +30,14 @@ def generate_tree(tree, genome, output, method, nodes, depth, max_depth,
 
     # Find the productions possible from the current root.
     productions = params['BNF_GRAMMAR'].rules[tree.root]
-    
+            
     # Find which productions can be used based on the derivation method.
-    available = legal_productions(method, depth_limit, tree.root,
-                                  productions['choices'])
+    if params['SEMANTIC_LOCK']:
+        available = legal_productions(method, depth_limit, tree.root,
+                                      productions['limited_choices'])
+    else:
+        available = legal_productions(method, depth_limit, tree.root,
+                                      productions['choices'])
     
     # Randomly pick a production choice.
     chosen_prod = choice(available)
@@ -288,14 +292,26 @@ def pi_grow(tree, max_depth):
             # choices.
 
             # Find which productions can be used based on the derivation method.
-            available = legal_productions("full", remaining_depth, node.root,
-                                          productions['choices'])
+            if params['SEMANTIC_LOCK']:
+                available = legal_productions("full", remaining_depth,
+                                              node.root,
+                                              productions['limited_choices'])
+            else:
+                available = legal_productions("full", remaining_depth,
+                                              node.root,
+                                              productions['choices'])
         else:
             # Any production choices can be made.
             
             # Find which productions can be used based on the derivation method.
-            available = legal_productions("random", remaining_depth, node.root,
-                                          productions['choices'])
+            if params['SEMANTIC_LOCK']:
+                available = legal_productions("random", remaining_depth,
+                                              node.root,
+                                              productions['limited_choices'])
+            else:
+                available = legal_productions("random", remaining_depth,
+                                              node.root,
+                                              productions['choices'])
         
         # Randomly pick a production choice.
         chosen_prod = choice(available)

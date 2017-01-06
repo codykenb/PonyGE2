@@ -118,7 +118,7 @@ def get_stats(individuals, end=False):
         if not end:
             print_generation_stats()
 
-    elif not params['SILENT']:
+    elif params['SILENT']:
         perc = stats['gen'] / (params['GENERATIONS']+1) * 100
         stdout.write("Evolution: %d%% complete\r" % perc)
         stdout.flush()
