@@ -188,6 +188,8 @@ def generate_test_suite(regex_string, session):
     # if we don't have any known test strings, see if the regex matches it.
     test_cases += generate_tests_if_string_match(compiled_regex, regex_string)
 
+    # generate_longer_tests(compiled_regex, regex_string, "bbbbXcyXXaaa")
+
     print("Number of test cases in suite:", len(test_cases))
 
     if len(test_cases) == 0:
@@ -213,6 +215,13 @@ def generate_test_suite(regex_string, session):
     return test_cases
 
 
+def generate_longer_tests(compiled_regex, regex_string, test_string):
+    new_search_string = test_string + 'a'
+    for i in range(1, 20):
+        generate_tests_if_string_match(compiled_regex, new_search_string)
+        new_search_string = new_search_string + 'a'
+
+
 def add_re_match_to_test(matches, passing_test_string):
     """
     take matching values as found by the regex library, and add them to our
@@ -231,7 +240,7 @@ def generate_tests_if_string_match(compiled_regex, test_string):
     test_cases = []
     a_test_candidate = RegexTest(test_string)
     vals = time_regex_test_case(compiled_regex, a_test_candidate, 1)
-
+    print("{0:.15f}".format(vals[0]) + " " + test_string)
     if len(list(vals[1])) > 0:  # the regex found a match, add it
         a_positive_test = add_re_match_to_test(vals[1], a_test_candidate)
         test_cases.append(a_positive_test)
