@@ -23,7 +23,7 @@ MUTATION_EVENTS:        1
 MUTATION_PROBABILITY:   None
 POPULATION_SIZE:        1000
 ELITE_SIZE:  		100
-FITNESS_FUNCTION:       RegexEval
+FITNESS_FUNCTION:       regex.RegexEval
 FITNESS_TEST_SUITE:     generate_macaddress_validation_tests
 RANDOM_SEED:            None
 REPLACEMENT:            generational
@@ -36,5 +36,5 @@ VERBOSE:                True
 TAILS:                  False
 SEMANTIC_LOCK:          False
 DEBUG:             False
-TARGET_SEED_FOLDER:      regex_mac_validation
+TARGET_SEED_FOLDER:     regex_improvement/mac_validation
 SEED_GENOME:            [2, 15, 4, 56, 2, 10, 2, 13, 9, 3, 13, 5, 4, 26, 4, 31, 3, 12, 3, 4, 59, 3, 5, 3, 11, 3, 5, 3, 12, 3, 4, 60, 2, 4, 35]

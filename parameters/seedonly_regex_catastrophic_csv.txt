@@ -23,7 +23,7 @@ MUTATION_EVENTS:        1
 MUTATION_PROBABILITY:   None
 POPULATION_SIZE:        1000
 ELITE_SIZE:  		100
-FITNESS_FUNCTION:       RegexEval
+FITNESS_FUNCTION:       regex.RegexEval
 FITNESS_TEST_SUITE:     generate_catastrophic_csv
 RANDOM_SEED:            None
 REPLACEMENT:            generational
@@ -36,5 +36,5 @@ VERBOSE:                True
 TAILS:                  False
 SEMANTIC_LOCK:          False
 DEBUG:             False
-TARGET_SEED_FOLDER:      regex_catastrophic_csv
+TARGET_SEED_FOLDER:     regex_improvement/catastrophic_csv
 SEED_GENOME:            [2, 15, 4, 56, 2, 11, 3, 12, 3, 4, 44, 3, 4, 40, 3, 4, 51, 2, 4, 42, 3, 12, 3, 4, 59, 3, 5, 3, 11, 3, 5, 3, 11, 3, 4, 60, 2, 5, 4, 41]
