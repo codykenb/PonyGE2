@@ -6,6 +6,7 @@ from fitness.regex.testing.RegexTimer import time_regex_test_case
 from algorithm.parameters import params
 from fitness.base_ff_classes.base_ff import base_ff
 from stats.stats import stats
+from  operators.CodeLibrary import CodeLibrary
 
 # Author: Brendan Cody-Kenny - codykenny at gmail
 
@@ -143,4 +144,7 @@ class RegexEval(base_ff):
             return self.default_fitness
         
         else:
-            return self.q.get()
+            return_fitness = self.q.get()
+
+            CodeLibrary.harvest_improvement(ind, return_fitness, RegexEval.seed_regex)
+            return return_fitness
