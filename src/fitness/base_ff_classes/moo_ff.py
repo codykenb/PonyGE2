@@ -57,16 +57,22 @@ class moo_ff:
             # fitness.
             fitness = moo_ff.default_fitness
 
-            # These individuals are valid (i.e. not invalids), but they are
-            # not feasible. Count with stats["infeasible"] counter.
-            stats['infeasible'] += 1
+            if hasattr(ind, "runtime_error"):
+                # Individual is valid but has produced a runtime error.
+                # Count with stats["runtime_error"] counter.
+                stats['runtime_error'] += 1
+                
+                # Remove "runtime_error" attribute from individual.
+                del ind.runtime_error
 
         return fitness
 
     @staticmethod
     def value(fitness_vector, objective_index):
         """
-        This is a static method required by NSGA-II.
+        This is a static method required by NSGA-II for sorting populations
+        based on a given fitness function, or for returning a given index of a
+        population based on a given fitness function.
         
         :param fitness_vector: A vector/list of fitnesses.
         :param objective_index: The index of the desired fitness.
