@@ -1,15 +1,35 @@
 # import jsonpickle
 import json
 import math
+from pathlib import Path
 
 
 class CodeLibrary():
     """
     Curate a library of useful (regex) snippets
+
+    TODO:
+    Refactor this class so it is instantiated during initialisation.
+    Change json loading to DB persistence layer
     """
 
-    store = []
     last_best = None
+
+    """
+    This is hardcoded for now.
+    We may want to maintain a library for each grammar, 
+    though we may also want to keep a more general library for a suite of languages
+    (e.g. all PCRE-like regex grammars)
+    """
+    lib_file = "../harvest-lib/regex.json"
+    store = []
+
+    def load_existing_material():
+        if os.Path.isFile(CodeLibrary.lib_file):
+            with open(CodeLibrary.lib_file) as data_file:
+                CodeLibrary.store = json.load(lib_file)
+        else:
+            print("No previous code library found!")
 
     def harvest_improvement(improved_individual, new_fitness, original_individual):
 
@@ -35,6 +55,7 @@ class CodeLibrary():
         improvement = {'old_str': old_material,
                        'new_str': new_material,
                        'fit_improvement': (CodeLibrary.last_best.fitness - new_fitness)}
+        # In future versions, we could use a diff on the phenotype
 
         CodeLibrary.add_to_cache(improvement)
 
@@ -42,6 +63,9 @@ class CodeLibrary():
             len(CodeLibrary.store)))
 
         CodeLibrary.last_best = improved_individual
+        CodeLibrary.load_existing_material()
+        with open(CodeLibrary.lib_file, 'w+') as outfile:  # create if necessary
+            json.dump(CodeLibrary.store, outfile)
 
     def add_to_cache(improvement):
         found = False
@@ -78,7 +102,7 @@ class CodeLibrary():
             if not string_a[(len(string_a) - 1) - i] == string_b[(len(string_b) - 1) - i]:
                 suffix_length = i
                 break
-        return string_a[prefix_length:(len(string_a) - 1 - suffix_length)], string_b[prefix_length:(len(string_b) - 1 - suffix_length)]
+        return string_a[prefix_length:(len(string_a) - suffix_length)], string_b[prefix_length:(len(string_b) - suffix_length)]
 
     def search_cache(unknown_regex):
         """
