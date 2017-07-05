@@ -1,7 +1,7 @@
 # import jsonpickle
 import json
 import math
-from pathlib import Path
+import os.path
 
 
 class CodeLibrary():
@@ -25,9 +25,9 @@ class CodeLibrary():
     store = []
 
     def load_existing_material():
-        if os.Path.isFile(CodeLibrary.lib_file):
+        if os.path.isfile(CodeLibrary.lib_file):
             with open(CodeLibrary.lib_file) as data_file:
-                CodeLibrary.store = json.load(lib_file)
+                CodeLibrary.store = json.load(data_file)
         else:
             print("No previous code library found!")
 
@@ -57,13 +57,14 @@ class CodeLibrary():
                        'fit_improvement': (CodeLibrary.last_best.fitness - new_fitness)}
         # In future versions, we could use a diff on the phenotype
 
+        CodeLibrary.load_existing_material()
+
         CodeLibrary.add_to_cache(improvement)
 
         print("Code Library updated, now contains {}".format(
             len(CodeLibrary.store)))
 
         CodeLibrary.last_best = improved_individual
-        CodeLibrary.load_existing_material()
         with open(CodeLibrary.lib_file, 'w+') as outfile:  # create if necessary
             json.dump(CodeLibrary.store, outfile)
 
