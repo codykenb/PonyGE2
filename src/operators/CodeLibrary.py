@@ -75,8 +75,9 @@ class CodeLibrary():
             if existing_imp['old_str'] == improvement['old_str'] and existing_imp['old_str'] == improvement['old_str']:
                 found = True
                 # update the running average, increment found_count
+                existing_imp['found_count'] = (++existing_imp['found_count'])
                 existing_imp['fit_improvement'] += (improvement['fit_improvement'] -
-                                                    existing_imp['fit_improvement']) / (++existing_imp['found_count'])
+                                                    existing_imp['fit_improvement']) / (existing_imp['found_count'])
                 break
         # If this is the first time we are seeing this improvement, save it
         if not found:
